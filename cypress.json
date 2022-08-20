@@ -1,8 +1,6 @@
 {
 	"env": {
-   		"TAGS": "@smoke",
 		"API_HOST": "https://jsonplaceholder.typicode.com",
-		"UI_HOST": "https://www.saucedemo.com/",
 		"UI_HOST_Parabank": "https://parabank.parasoft.com/parabank/index.htm",
 		"API_HOST_Parabank": "https://parabank.parasoft.com/parabank/index.htm"
 	},
@@ -16,7 +14,7 @@
 	"reporterOptions": {
 		"reportDir": "reports",
 		"charts": true,
-		"reportPageTitle": "Test Suite Vitalik-taf",
+		"reportPageTitle": "Test Suite Parabank",
 		"embeddedScreenshots": true,
 		"inlineAssets": true
 	}
