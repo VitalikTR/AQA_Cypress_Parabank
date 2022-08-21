@@ -16,7 +16,7 @@ const cucumberJsonDir = 'cypress/test-results/cucumber-json';
 const cucumberReportFileMap = {};
 const cucumberReportMap = {};
 const jsonIndentLevel = 2;
-const htmlReportDir = 'reports/html';
+const htmlReportDir = 'cypress/test-results/html';
 const screenshotsDir = 'cypress/screenshots';
 const snapshotDir = 'cypress/snapshots';
 
@@ -55,27 +55,27 @@ function addScreenshots() {
   */
   // Prepend the given path segment
   const prependPathSegment = (pathSegment) => (location) =>
-    path.join(pathSegment, location);
+      path.join(pathSegment, location);
   // fs.readdir but with relative paths
   const readdirPreserveRelativePath = (location) =>
-    fs.readdirSync(location).map(prependPathSegment(location));
+      fs.readdirSync(location).map(prependPathSegment(location));
   // Recursive fs.readdir but with relative paths
   const readdirRecursive = (location) =>
-    readdirPreserveRelativePath(location).reduce(
-      (result, currentValue) =>
-        fs.statSync(currentValue).isDirectory()
-          ? result.concat(readdirRecursive(currentValue))
-          : result.concat(currentValue),
-      []
-    );
+      readdirPreserveRelativePath(location).reduce(
+          (result, currentValue) =>
+              fs.statSync(currentValue).isDirectory()
+                  ? result.concat(readdirRecursive(currentValue))
+                  : result.concat(currentValue),
+          []
+      );
   const screenshots = readdirRecursive(path.resolve(screenshotsDir)).filter(
-    (file) => {
-      return file.indexOf('.png') > -1;
-    }
+      (file) => {
+        return file.indexOf('.png') > -1;
+      }
   );
   // Extract feature list from screenshot list
   const featuresList = Array.from(
-    new Set(screenshots.filter((x) => x.match(/[\w-_.]+\.feature/g)).map((x) => x.match(/[\w-_.]+\.feature/g)[0]))
+      new Set(screenshots.filter((x) => x.match(/[\w-_.]+\.feature/g)).map((x) => x.match(/[\w-_.]+\.feature/g)[0]))
   );
   featuresList.forEach((feature) => {
     screenshots.forEach((screenshot) => {
@@ -84,16 +84,16 @@ function addScreenshots() {
       //   - Getting Started -- I can use scenario outlines with examples (failed).png
       //   - Getting Started -- I can use scenario outlines with examples.png
       const regex =
-        /(?<=--\ ).+?((?=\ \(example\ #\d+\))|(?=\ \(failed\))|(?=\.\w{3}))/g;
+          /(?<=--\ ).+?((?=\ \(example\ #\d+\))|(?=\ \(failed\))|(?=\.\w{3}))/g;
       const [scenarioName] = screenshot.match(regex);
       console.info(
-        chalk.blue('\n    Adding screenshot to cucumber-json report for')
+          chalk.blue('\n    Adding screenshot to cucumber-json report for')
       );
       console.info(chalk.blue(`    '${scenarioName}'`));
       // Find all scenarios matching the scenario name of the screenshot.
       // This is important when using the scenario outline mechanism
       const myScenarios = cucumberReportMap[feature][0].elements.filter((e) =>
-        scenarioName.includes(e.name)
+          scenarioName.includes(e.name)
       );
       if (!myScenarios) {
         return;
@@ -106,11 +106,11 @@ function addScreenshots() {
         let myStep;
         if (screenshot.includes('(failed)')) {
           myStep = myScenario.steps.find(
-            (step) => step.result.status === 'failed'
+              (step) => step.result.status === 'failed'
           );
         } else {
           myStep = myScenario.steps.find((step) =>
-            step.name.includes('screenshot')
+              step.name.includes('screenshot')
           );
         }
         if (!myStep) {
@@ -131,8 +131,8 @@ function addScreenshots() {
       });
       //Write JSON with screenshot back to report file.
       fs.writeFileSync(
-        path.join(cucumberJsonDir, cucumberReportFileMap[feature]),
-        JSON.stringify(cucumberReportMap[feature], null, jsonIndentLevel)
+          path.join(cucumberJsonDir, cucumberReportFileMap[feature]),
+          JSON.stringify(cucumberReportMap[feature], null, jsonIndentLevel)
       );
     });
   });
@@ -141,27 +141,27 @@ function addScreenshots() {
 function addSnapshots() {
   // Prepend the given path segment
   const prependPathSegment = (pathSegment) => (location) =>
-    path.join(pathSegment, location);
+      path.join(pathSegment, location);
   // fs.readdir but with relative paths
   const readdirPreserveRelativePath = (location) =>
-    fs.readdirSync(location).map(prependPathSegment(location));
+      fs.readdirSync(location).map(prependPathSegment(location));
   // Recursive fs.readdir but with relative paths
   const readdirRecursive = (location) =>
-    readdirPreserveRelativePath(location).reduce(
-      (result, currentValue) =>
-        fs.statSync(currentValue).isDirectory()
-          ? result.concat(readdirRecursive(currentValue))
-          : result.concat(currentValue),
-      []
-    );
+      readdirPreserveRelativePath(location).reduce(
+          (result, currentValue) =>
+              fs.statSync(currentValue).isDirectory()
+                  ? result.concat(readdirRecursive(currentValue))
+                  : result.concat(currentValue),
+          []
+      );
   const snapshots = readdirRecursive(path.resolve(snapshotDir)).filter(
-    (file) => {
-      return file.indexOf('.diff.png') > -1;
-    }
+      (file) => {
+        return file.indexOf('.diff.png') > -1;
+      }
   );
   // Extract feature list from screenshot list
   const featuresList = Array.from(
-    new Set(snapshots.map((x) => x.match(/[\w-_.]+\.feature/g)[0]))
+      new Set(snapshots.map((x) => x.match(/[\w-_.]+\.feature/g)[0]))
   );
   featuresList.forEach((feature) => {
     snapshots.forEach((snapshot) => {
@@ -170,18 +170,18 @@ function addSnapshots() {
       const regex = /(?<=--\s)[\w\s\,]+/g;
       const [scenarioName] = snapshot.match(regex);
       console.info(
-        chalk.blue('\n    Adding snapshot to cucumber-json report for')
+          chalk.blue('\n    Adding snapshot to cucumber-json report for')
       );
       console.info(chalk.blue(`    '${scenarioName}'`));
       const myScenarios = cucumberReportMap[feature][0].elements.filter((e) =>
-        scenarioName.includes(e.name)
+          scenarioName.includes(e.name)
       );
       if (!myScenarios) {
         return;
       }
       myScenarios.forEach((myScenario) => {
         const myStep = myScenario.steps.find(
-          (step) => step.result.status === 'failed'
+            (step) => step.result.status === 'failed'
         );
         if (!myStep) {
           return;
@@ -200,8 +200,8 @@ function addSnapshots() {
       });
       //Write JSON with snapshot back to report file.
       fs.writeFileSync(
-        path.join(cucumberJsonDir, cucumberReportFileMap[feature]),
-        JSON.stringify(cucumberReportMap[feature], null, jsonIndentLevel)
+          path.join(cucumberJsonDir, cucumberReportFileMap[feature]),
+          JSON.stringify(cucumberReportMap[feature], null, jsonIndentLevel)
       );
     });
   });
@@ -210,9 +210,9 @@ function addSnapshots() {
 function generateReport() {
   if (!fs.existsSync(cucumberJsonDir)) {
     console.warn(
-      chalk.yellow(
-        `WARNING: Folder './${cucumberJsonDir}' not found. REPORT CANNOT BE CREATED!`
-      )
+        chalk.yellow(
+            `WARNING: Folder './${cucumberJsonDir}' not found. REPORT CANNOT BE CREATED!`
+        )
     );
   } else {
     report.generate({
@@ -225,9 +225,9 @@ function generateReport() {
         browser: {
           name: 'chrome',
         },
-        device: 'VM',
+        device: 'PC',
         platform: {
-          name: 'linux',
+          name: 'Windows',
         },
       },
     });

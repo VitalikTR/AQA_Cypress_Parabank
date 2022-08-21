@@ -12,11 +12,13 @@ export default defineConfig({
   defaultCommandTimeout: 10000,
   reporter: 'cypress-mochawesome-reporter',
   reporterOptions: {
-    reportDir: 'reports',
+    reportDir: 'cypress/test-results/mocha',
     charts: true,
-    reportPageTitle: 'Test Suite Parabank',
+    reportPageTitle: 'Test Suite AQA',
     embeddedScreenshots: true,
     inlineAssets: true,
+    html: true,
+    json: true
   },
   e2e: {
     // We've imported your old cypress plugins here.
